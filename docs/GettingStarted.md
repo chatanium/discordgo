@@ -32,10 +32,11 @@ to finish creating your account.
 
 # Requirements
 
-DiscordGo requires Go version 1.4 or higher.  It has been tested to compile and
-run successfully on Debian Linux 8, FreeBSD 10, and Windows 7.  It is expected 
-that it should work anywhere Go 1.4 or higher works. If you run into problems
-please let us know :).
+This fork requires Go 1.27.0 or newer and uses Go 1.27.3 in CI.
+Ordinary Gateway and REST builds do not require a native voice library.
+Voice builds additionally require CGO and the pinned patched libdave described
+in [Native DAVE boundary](../internal/dave/README.md); platform compatibility
+must be verified with that native toolchain.
 
 You must already have a working Go environment setup to use DiscordGo.  If you 
 are new to Go and have not yet installed and tested it on your computer then 
@@ -52,29 +53,20 @@ for your editor &mdash; they are hugely helpful when developing Go code.
 
 # Install DiscordGo
 
-Like any other Go package the fist step is to `go get` the package.  This will
-always pull the latest tagged release from the master branch. Then run 
-`go install` to compile and install the libraries on your system.
-
-#### Linux/BSD
-
-Run go get to download the package to your GOPATH/src folder.
+Use the canonical fork module from your application's module directory:
 
 ```sh
-go get github.com/bwmarrin/discordgo
+go get github.com/chatanium/discordgo@v0.30.0
 ```
 
-Finally, compile and install the package into the GOPATH/pkg folder. This isn't
-absolutely required but doing this will allow the Go plugin for your editor to
-provide autocomplete for all DiscordGo functions.
+Import it as `github.com/chatanium/discordgo`. Do not add a DiscordGo `replace`
+directive or depend on a copy inside another repository. Go resolves the tagged
+SDK and its pinned dependencies through the usual module mechanisms.
 
-```sh
-cd $GOPATH/src/github.com/bwmarrin/discordgo
-go install
-```
-
-#### Windows
-Placeholder.
+For native voice, build the patched library first, configure its include and
+library paths as documented above, and compile your application with
+`CGO_ENABLED=1 go build -tags=voice`. Default builds expose voice as unavailable
+rather than substituting an unencrypted implementation.
 
 
 # Next...

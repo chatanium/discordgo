@@ -11,25 +11,34 @@ This example makes heavy use of the [Pion](https://github.com/pion) family of li
 Go check them out for anything to do with voice, video or WebRTC; it's a great
 group of people maintaining the project!
 
-Please note that voice receive is **not** officially supported, any may break
-at essentially any time (and has in the past). This code works at the time of
-its writing, but YMMV in the future.
+Voice receive depends on Discord's evolving voice protocol. Native unit tests
+and successful compilation do not establish live multi-member interoperability;
+verify that separately before relying on recorded output.
 
 **Join [Discord Gophers](https://discord.gg/0f1SbxBZjYoCtNPP)
 Discord chat channel for support.**
 
 ### Build
 
-To build, make sure that modules are enabled, and run:
+Use Go 1.27.3 and build the pinned patched libdave as described in
+[the native instructions](../../internal/dave/README.md). Export the documented
+CGO include/library and loader paths. This directory is an independent module
+that requires the published `github.com/chatanium/discordgo@v0.30.0`, not a local
+replacement.
 
 ```sh
-go build
+CGO_ENABLED=1 go build -tags=voice
 ```
 
 ### Usage
 
-Three flags are required: the bot's token, the guild ID containing the voice channel to join, and the ID of the voice channel to join.
+Supply the bot token, guild ID, channel ID, and a JSON file containing every
+required finite `discordgo.VoiceConfig` bound. Durations are integer nanoseconds;
+`VoiceConfig.Validate` rejects absent or invalid bounds.
 
 ```sh
-./voice_receive -t MY_TOKEN -g 1234123412341234 -c 5678567856785678
+./voice_receive -t MY_TOKEN -g 1234123412341234 -c 5678567856785678 -voice-config bounds.json
 ```
+
+The example writes authenticated Opus packets into Ogg without PCM decoding.
+It requires libdave's C++/BoringSSL build closure, but no separate libopus codec.

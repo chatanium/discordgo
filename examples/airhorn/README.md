@@ -10,14 +10,12 @@ Discord chat channel for support.**
 
 ### Build
 
-This assumes you already have a working Go environment setup and that
-DiscordGo is correctly installed on your system.
-
-From within the airhorn example folder, run the below command to compile the
-example.
+Use Go 1.27.3 and build the pinned patched libdave as described in
+[the native instructions](../../internal/dave/README.md). Export the documented
+CGO include/library and loader paths, then run this from the example directory:
 
 ```sh
-go build
+CGO_ENABLED=1 go build -tags=voice
 ```
 
 ### Usage
@@ -26,13 +24,20 @@ go build
 Usage of ./airhorn:
   -t string
         Bot Token
+  -voice-config string
+        Required JSON file with explicit discordgo.VoiceConfig bounds
 ```
 
 The below example shows how to start the bot from the airhorn example folder.
 
 ```sh
-./airhorn -t YOUR_BOT_TOKEN
+./airhorn -t YOUR_BOT_TOKEN -voice-config bounds.json
 ```
+
+`bounds.json` must provide every required finite `discordgo.VoiceConfig` bound;
+durations are encoded as integer nanoseconds and `VoiceConfig.Validate` rejects
+missing or invalid values. Keep `airhorn.dca` in the working directory. This
+example sends existing Opus packets and does not need a separate libopus decoder.
 
 ### Creating sounds
 

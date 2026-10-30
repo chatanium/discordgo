@@ -1,11 +1,16 @@
 ## DiscordGo
 <hr>
-<img align="right" src="https://github.com/bwmarrin/discordgo/blob/master/docs/img/discordgo.png">
+<img align="right" src="img/discordgo.svg">
 
 [Go](https://golang.org/) (Golang) interface for the [Discord](https://discord.com/) 
 chat service.  Provides both low-level direct bindings to the 
 Discord API and helper functions that allow you to make custom clients and chat 
 bot applications easily.
+
+This is the independently versioned `github.com/chatanium/discordgo` fork,
+including Chatanium's Gateway and native DAVE patches. See the [README](../README.md)
+for upstream provenance and the [native boundary](../internal/dave/README.md)
+for voice build prerequisites.
 
 [Discord](https://discord.com/) is an all-in-one voice and text chat for 
 gamers that's free, secure, and works on both your desktop and phone. 
@@ -20,8 +25,8 @@ gamers that's free, secure, and works on both your desktop and phone.
 
 ### Learn More
 * Check out the [Getting Started](GettingStarted.md) section
-* Read the reference docs on [Godoc](https://godoc.org/github.com/bwmarrin/discordgo) or [GoWalker](https://gowalker.org/github.com/bwmarrin/discordgo)
-* Try the [examples](https://github.com/bwmarrin/discordgo/tree/master/examples)
+* Read the reference docs on [pkg.go.dev](https://pkg.go.dev/github.com/chatanium/discordgo)
+* Try the [examples](../examples)
 * Explore [Awesome DiscordGo](https://github.com/bwmarrin/discordgo/wiki/Awesome-DiscordGo)
 
 ### Join Us!

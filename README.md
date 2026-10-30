@@ -1,6 +1,6 @@
-# DiscordGo
+# Chatanium DiscordGo
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/bwmarrin/discordgo.svg)](https://pkg.go.dev/github.com/bwmarrin/discordgo) [![Go Report Card](https://goreportcard.com/badge/github.com/bwmarrin/discordgo)](https://goreportcard.com/report/github.com/bwmarrin/discordgo) [![CI](https://github.com/bwmarrin/discordgo/actions/workflows/ci.yml/badge.svg)](https://github.com/bwmarrin/discordgo/actions/workflows/ci.yml) [![Discord Gophers](https://img.shields.io/badge/Discord%20Gophers-%23discordgo-blue.svg)](https://discord.gg/golang) [![Discord API](https://img.shields.io/badge/Discord%20API-%23go_discordgo-blue.svg)](https://discord.com/invite/discord-api)
+[![Go Reference](https://pkg.go.dev/badge/github.com/chatanium/discordgo.svg)](https://pkg.go.dev/github.com/chatanium/discordgo) [![Go Report Card](https://goreportcard.com/badge/github.com/chatanium/discordgo)](https://goreportcard.com/report/github.com/chatanium/discordgo) [![CI](https://github.com/chatanium/discordgo/actions/workflows/ci.yml/badge.svg)](https://github.com/chatanium/discordgo/actions/workflows/ci.yml)
 
 <img align="right" alt="DiscordGo logo" src="docs/img/discordgo.svg" width="400">
 
@@ -9,13 +9,17 @@ bindings to the [Discord](https://discord.com/) chat client API. DiscordGo
 has nearly complete support for all of the Discord API endpoints, websocket
 interface, and voice interface.
 
-If you would like to help the DiscordGo package please use 
-[this link](https://discord.com/oauth2/authorize?client_id=173113690092994561&scope=bot)
-to add the official DiscordGo test bot **dgo** to your server. This provides 
-indispensable help to this project.
+This independently versioned fork is based on
+[bwmarrin/discordgo](https://github.com/bwmarrin/discordgo) commit
+`f43dd94faaacd5b163e9e783f14b5bd8be639fc9` (after upstream `v0.29.0`).
+Its first independent release is `v0.30.0`; upstream tags are not releases of
+this module identity. The BSD license and upstream history are retained.
 
-* See [dgVoice](https://github.com/bwmarrin/dgvoice) package for an example of
-additional voice helper functions and features for DiscordGo.
+The imported Chatanium patch set adds context-aware Gateway dispatch, bounded
+ingress and observer hooks, partial-message/state handling, and the native DAVE
+voice transport. Voice uses explicit configuration and authenticated Opus
+packets; upstream voice helper packages are not drop-in replacements for this API.
+Source migration alone is not evidence of live Discord interoperability.
 
 * See [dca](https://github.com/bwmarrin/dca) for an **experimental** stand alone
 tool that wraps `ffmpeg` to create opus encoded audio appropriate for use with
@@ -28,13 +32,12 @@ Gophers](https://discord.gg/golang) chat server.**
 
 ### Installing
 
-This assumes you already have a working Go environment, if not please see
-[this page](https://golang.org/doc/install) first.
-
-`go get` *will always pull the latest tagged release from the master branch.*
+Use Go 1.27.3 (the CI toolchain). From your application's Go module, require
+the canonical fork directly; no `replace` directive or local SDK checkout is
+needed:
 
 ```sh
-go get github.com/bwmarrin/discordgo
+go get github.com/chatanium/discordgo@v0.30.0
 ```
 
 ### Usage
@@ -42,7 +45,7 @@ go get github.com/bwmarrin/discordgo
 Import the package into your project.
 
 ```go
-import "github.com/bwmarrin/discordgo"
+import "github.com/chatanium/discordgo"
 ```
 
 Construct a new Discord client which can be used to access the variety of 
@@ -54,6 +57,24 @@ discord, err := discordgo.New("Bot " + "authentication token")
 
 See Documentation and Examples below for more detailed information.
 
+### Native voice
+
+The default build does not load native voice code. Building with `-tags=voice`
+requires CGO, a C/C++ toolchain, and the pinned, source-patched `libdave` library.
+See [the native build instructions](internal/dave/README.md) for the exact source,
+patch, headers, linker and loader configuration. An unpatched upstream binary is
+not ABI-compatible with the required extension symbols.
+
+### Repository checks
+
+CI owns SDK tests and examples here, including the independent
+`examples/linked_roles` and `examples/voice_receive` Go modules. CI runs ordinary
+builds, race tests and vet; it does not claim native voice coverage. Native
+voice checks require the real patched library and remain integration-owner
+responsibilities, as described in the native instructions. Unit checks do not
+require bot credentials or establish live Discord acceptance. Nested examples
+consume the published fork version, not a local replacement.
+
 
 ## Documentation
 
@@ -63,8 +84,8 @@ Because of that there may be major changes to library in the future.
 The DiscordGo code is fairly well documented at this point and is currently
 the only documentation available. Go reference (below) presents that information in a nice format.
 
-- [![Go Reference](https://pkg.go.dev/badge/github.com/bwmarrin/discordgo.svg)](https://pkg.go.dev/github.com/bwmarrin/discordgo) 
-- Hand crafted documentation coming eventually.
+- [Go reference](https://pkg.go.dev/github.com/chatanium/discordgo)
+- [Getting started](docs/GettingStarted.md)
 
 
 ## Examples
@@ -72,7 +93,7 @@ the only documentation available. Go reference (below) presents that information
 Below is a list of examples and other projects using DiscordGo.  Please submit 
 an issue if you would like your project added or removed from this list. 
 
-- [DiscordGo Examples](https://github.com/bwmarrin/discordgo/tree/master/examples) - A collection of example programs written with DiscordGo
+- [DiscordGo Examples](examples) - Example programs maintained with this fork
 - [Awesome DiscordGo](https://github.com/bwmarrin/discordgo/wiki/Awesome-DiscordGo) - A curated list of high quality projects using DiscordGo
 
 ## Troubleshooting
